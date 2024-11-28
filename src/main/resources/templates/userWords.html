@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Words</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .scoreboard {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Words for User</h1>
+
+<div class="scoreboard">
+    <p>Total Words: <span th:text="${totalWords}"></span></p>
+    <p>Learned Words: <span th:text="${learnedWords}"></span></p>
+    <p>Unlearned Words: <span th:text="${unlearnedWords}"></span></p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Word</th>
+        <th>Translation</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="word : ${words}">
+        <td th:text="${word.word}"></td>
+        <td th:text="${word.translation}"></td>
+        <td>
+            <a th:href="@{/vocabulary/learned/{wordId}(wordId=${word.id})}">
+                <i class="fas fa-check" title="Mark as Learned"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Form to add new words -->
+<h2>Add New Word</h2>
+<form action="#" th:action="@{/vocabulary/addWord}" method="post">
+    <input type="hidden" name="userId" th:value="${userId}"/>
+    <input type="text" name="word" placeholder="New Word" required/>
+    <input type="text" name="translation" placeholder="Translation" required/>
+    <button type="submit">Add Word</button>
+</form>
+
+</body>
+</html>
