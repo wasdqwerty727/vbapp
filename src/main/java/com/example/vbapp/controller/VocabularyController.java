@@ -85,4 +85,38 @@ public String listWords(@PathVariable Long userId, Model model) {
         // Redirect back to the user's words page
         return "redirect:/vocabulary/words/" + userId;
     }
+    // Method to show the edit form
+    @GetMapping("/vocabulary/edit/{wordId}")
+    public String showEditForm(@PathVariable Long wordId, Model model) {
+        Word word = wordRepository.findById(wordId)
+                .orElseThrow(() -> new RuntimeException("Word not found"));
+        model.addAttribute("word", word);
+        return "editWord"; // This should match the name of your edit Word HTML template
+    }
+
+    // Method to handle the update request
+    @PostMapping("/vocabulary/updateWord")
+    public String updateWord(@RequestParam Long id, @RequestParam String word, @RequestParam String translation) {
+        Word existingWord = wordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Word not found"));
+        existingWord.setWord(word);
+        existingWord.setTranslation(translation);
+
+        // Save the updated word to the database
+        wordRepository.save(existingWord);
+
+        // Redirect back to the user's words page
+        return "redirect:/vocabulary/words/" + existingWord.getUser ().getId();
+    }
+    @PostMapping("/vocabulary/delete/{wordId}")
+    public String deleteWord(@PathVariable Long wordId) {
+        Word word = wordRepository.findById(wordId)
+                .orElseThrow(() -> new RuntimeException("Word not found"));
+
+        // Delete the word from the database
+        wordRepository.delete(word);
+
+        // Redirect back to the user's words page
+        return "redirect:/vocabulary/words/" + word.getUser ().getId();
+    }
 }
